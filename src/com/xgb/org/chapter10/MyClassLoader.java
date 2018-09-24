@@ -62,6 +62,55 @@ public class MyClassLoader extends ClassLoader{
 		
 	}
 	
+	public Class<?> loadClass(String name) throws ClassNotFoundException{
+		return loadClass(name , false);
+	}
+	
+	
+	//破坏父类委托机制   通过重写loadClass来实现
+	protected Class<?> loadClass(String name ,boolean resolve) throws ClassNotFoundException{
+		//1
+		synchronized (getClassLoadingLock(name)) {
+			//2
+			Class<?> klass = findLoadedClass(name);
+			//3
+			if(klass == null) {
+				//4
+				if(name.startsWith("java.") || name.startsWith("javax")) {
+					try {
+						klass = getSystemClassLoader().loadClass(name);
+					} catch (Exception e) {
+						//ignore
+					}
+				}else {
+					//5
+					try {
+						klass = this.findClass(name);
+					} catch (Exception e) {
+						//ignore
+					}
+					//6
+					if(klass == null) {
+						if(getParent() != null) {
+							klass = getSystemClassLoader().loadClass(name);
+						}
+					}
+				}
+			}
+			
+			//7
+			if(null == klass) {
+				throw new ClassNotFoundException("The Class " + name + "not found.");
+			}
+			if(resolve) {
+				resolveClass(klass);
+			}
+			
+			return klass;
+		}
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "My ClassLoader";
