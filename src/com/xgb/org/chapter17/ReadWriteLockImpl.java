@@ -81,7 +81,7 @@ public class ReadWriteLockImpl implements ReadWriteLock {
 	}
 	
 	//获取当前有多少个线程正在进行写的操作
-	public int getWritingReaders() 
+	public int getWritingWriters() 
 	{
 		return this.writingWriters;
 	}
