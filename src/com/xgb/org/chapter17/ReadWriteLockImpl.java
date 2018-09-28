@@ -16,6 +16,9 @@ public class ReadWriteLockImpl implements ReadWriteLock {
 	//当前有多少个线程正在等待
 	private int waitingWriters = 0;
 	
+	//当前有多少个读的线程
+	private int readingReaders = 0;
+	
 	//read和write的偏好设置
 	private boolean preferWriter;
 	
@@ -33,26 +36,69 @@ public class ReadWriteLockImpl implements ReadWriteLock {
 	@Override
 	//创建read lock
 	public Lock readLock() {
-		return null;
+		return new ReadLock(this);
 	}
 
 	@Override
 	public Lock writeLock() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WriteLock(this);
+	}
+	
+	//使写的线程数量增加
+	void incrementWritingWriters() 
+	{
+		this.writingWriters++;
+	}
+
+	//使等待的线程增加
+	void incrementWaitingWriters()
+	{
+		this.waitingWriters++;
+	}
+	
+	//使读线程数量增加
+	void incrementReadingReaders() 
+	{
+		this.readingReaders++;
+	}
+	
+	//使写的线程数量减少
+	void decrementWritingWriters() 
+	{
+		this.writingWriters--;
+	}
+	
+	//使等待的线程数量减少
+	void decrementWaitingWriters() 
+	{
+		this.waitingWriters--;
+	}
+	
+	//使读的线程数量减少
+	void decrementReadingReaders() 
+	{
+		this.readingReaders--;
+	}
+	
+	//获取当前有多少个线程正在进行写的操作
+	public int getWritingReaders() 
+	{
+		return this.writingWriters;
+	}
+	
+	@Override
+	public int getWaitingWriters() 
+	{
+		return this.writingWriters;
 	}
 
 	@Override
-	public int getWaitingWriters() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getReadingReader() 
+	{
+		return this.readingReaders;
 	}
-
-	@Override
-	public int getReadingReader() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
+	
 	
 	/**
 	 * 获取对象锁
@@ -61,6 +107,18 @@ public class ReadWriteLockImpl implements ReadWriteLock {
 	Object getMutex()
 	{
 		return this.MUTEX;
+	}
+	
+	//获取当前是否偏向写锁
+	boolean getPreferWriter() 
+	{
+		return this.preferWriter;
+	}
+	
+	//设置写锁偏好
+	void changePrefer(boolean preferWriter) 
+	{
+		this.preferWriter = preferWriter;
 	}
 
 }

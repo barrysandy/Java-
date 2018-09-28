@@ -24,7 +24,7 @@ public class ReadLock implements Lock {
 				readWriteLock.getMutex().wait();
 			}
 			//成功获得该锁，并且使用readingReaders的数量增加
-			//readWriteLock.incrementReadingReaders();
+			readWriteLock.incrementReadingReaders();
 		}
 
 	}
@@ -33,7 +33,12 @@ public class ReadLock implements Lock {
 	public void unlock() {
 		synchronized(readWriteLock.getMutex())
 		{
-			
+			//释放锁的过程就是使得当前reading的数量减-
+			//将preferWriter设置为true，可以使writer线程获得更多的机会
+			//通知唤醒与Mutex关联monitor waitset中的线程
+			readWriteLock.decrementReadingReaders();
+			readWriteLock.changePrefer(true);
+			readWriteLock.getMutex().notifyAll();
 		}
 
 	}
