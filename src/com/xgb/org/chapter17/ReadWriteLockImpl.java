@@ -89,7 +89,7 @@ public class ReadWriteLockImpl implements ReadWriteLock {
 	@Override
 	public int getWaitingWriters() 
 	{
-		return this.writingWriters;
+		return this.waitingWriters;
 	}
 
 	@Override

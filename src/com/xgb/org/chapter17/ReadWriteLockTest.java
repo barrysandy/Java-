@@ -19,7 +19,7 @@ public class ReadWriteLockTest {
 					try {
 						char c = text.charAt(index);
 						shareData.write(c);
-						System.err.println(currentThread() +  " write " + c);
+						System.err.println(Thread.currentThread() +  " write " + c);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -32,7 +32,7 @@ public class ReadWriteLockTest {
 			new Thread(()->{
 				while(true){
 					try {
-						System.out.println(currentThread() + " read " + new String(shareData.read()));
+						System.out.println(Thread.currentThread() + " read " + new String(shareData.read()));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -40,11 +40,6 @@ public class ReadWriteLockTest {
 			}).start();
 		}
 
-	}
-
-	private static String currentThread() {
-		
-		return "1111";
 	}
 
 }
